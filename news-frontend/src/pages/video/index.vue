@@ -200,7 +200,12 @@ onMounted(() => {
             </p>
             
             <div class="flex flex-wrap gap-2">
-              <span v-for="tag in video.tags" :key="tag" class="text-sm font-bold text-yellow-300 drop-shadow-md">
+              <span 
+                v-for="tag in video.tags" 
+                :key="tag" 
+                @click.stop="router.push(`/topic/${tag}`)"
+                class="text-sm font-bold text-yellow-300 drop-shadow-md cursor-pointer hover:underline"
+              >
                 #{{ tag }}
               </span>
             </div>

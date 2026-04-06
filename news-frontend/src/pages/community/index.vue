@@ -170,7 +170,12 @@ onMounted(() => {
 
             <!-- 话题标签 -->
             <div class="flex flex-wrap gap-2 mb-3" v-if="post.tags && post.tags.length > 0">
-              <span v-for="tag in post.tags" :key="tag" class="text-[13px] font-bold text-primary-accent bg-primary-accent/10 px-2 py-1 rounded-md cursor-pointer hover:bg-primary-accent/20 transition-colors">
+              <span 
+                v-for="tag in post.tags" 
+                :key="tag" 
+                @click="router.push(`/topic/${tag}`)"
+                class="text-[13px] font-bold text-primary-accent bg-primary-accent/10 px-2 py-1 rounded-md cursor-pointer hover:bg-primary-accent/20 transition-colors"
+              >
                 #{{ tag }}
               </span>
             </div>

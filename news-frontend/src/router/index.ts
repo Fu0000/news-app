@@ -54,6 +54,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Settings',
     component: () => import('@/pages/settings/index.vue'),
     meta: { requiresAuth: true, hideTabBar: true }
+  },
+  {
+    path: '/topic/:name',
+    name: 'Topic',
+    component: () => import('@/pages/topic/index.vue'),
+    meta: { requiresAuth: false, hideTabBar: true }
   }
 ]
 
