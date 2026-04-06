@@ -12,6 +12,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Login',
     component: () => import('@/pages/login/index.vue'),
     meta: { requiresAuth: false, hideTabBar: true }
+  },
+  {
+    path: '/detail/:id',
+    name: 'ArticleDetail',
+    component: () => import('@/pages/detail/article.vue'),
+    meta: { requiresAuth: false, hideTabBar: true }
   }
 ]
 

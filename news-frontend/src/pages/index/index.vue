@@ -42,13 +42,17 @@ const fetchNews = async () => {
 }
 
 const handleCategoryChange = (id: number | null) => {
-  activeCategoryId.value = id
-  fetchNews()
-}
-
-onMounted(() => {
-  fetchNews()
-})
+    activeCategoryId.value = id
+    fetchNews()
+  }
+  
+  const handleArticleClick = (id: string) => {
+    router.push(`/detail/${id}`)
+  }
+  
+  onMounted(() => {
+    fetchNews()
+  })
 
 const handleLogout = () => {
   userStore.logout()
@@ -106,6 +110,7 @@ const handleLogout = () => {
         <article 
           v-for="news in newsList" 
           :key="news.id"
+          @click="handleArticleClick(news.id)"
           class="group cursor-pointer bg-white rounded-[20px] shadow-sm border border-gray-50 hover:shadow-md transition-shadow overflow-hidden"
         >
           <!-- 无图情况 -->
