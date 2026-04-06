@@ -221,7 +221,10 @@ onMounted(() => {
           <div class="absolute bottom-[90px] right-2 w-14 z-20 flex flex-col items-center space-y-5 text-white">
             
             <!-- 头像 -->
-            <div class="relative w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-gray-800 shadow-md">
+            <div 
+              class="relative w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-gray-800 shadow-md cursor-pointer hover:scale-105 transition-transform"
+              @click.stop="router.push(`/user/${video.id}`)"
+            >
               <img :src="video.author.avatar" class="w-full h-full object-cover" />
             </div>
 

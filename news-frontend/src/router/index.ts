@@ -66,6 +66,18 @@ const routes: Array<RouteRecordRaw> = [
     name: 'EditProfile',
     component: () => import('@/pages/edit-profile/index.vue'),
     meta: { requiresAuth: true, hideTabBar: true }
+  },
+  {
+    path: '/user/:id',
+    name: 'UserProfile',
+    component: () => import('@/pages/user/index.vue'),
+    meta: { requiresAuth: false, hideTabBar: true }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/pages/error/404.vue'),
+    meta: { requiresAuth: false, hideTabBar: true }
   }
 ]
 

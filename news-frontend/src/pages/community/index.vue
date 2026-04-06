@@ -144,11 +144,11 @@ onMounted(() => {
           >
             <!-- 头部：作者信息 -->
             <div class="flex items-center justify-between mb-3">
-              <div class="flex items-center space-x-3">
-                <img :src="post.author.avatar" class="w-10 h-10 rounded-full bg-gray-100 object-cover border border-gray-100" />
+              <div class="flex items-center space-x-3 cursor-pointer group" @click.stop="router.push(`/user/${post.id}`)">
+                <img :src="post.author.avatar" class="w-10 h-10 rounded-full bg-gray-100 object-cover border border-gray-100 group-hover:opacity-80 transition-opacity" />
                 <div>
                   <div class="flex items-center space-x-1">
-                    <span class="text-[15px] font-bold text-primary">{{ post.author.name }}</span>
+                    <span class="text-[15px] font-bold text-primary group-hover:text-primary-accent transition-colors">{{ post.author.name }}</span>
                     <Icon v-if="post.author.title" icon="ph:check-circle-fill" class="w-4 h-4 text-blue-500" />
                   </div>
                   <div class="text-xs text-gray-400 mt-0.5 flex items-center space-x-2">

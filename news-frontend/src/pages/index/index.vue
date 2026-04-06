@@ -152,7 +152,10 @@ const handleCategoryChange = (id: number | null) => {
               {{ news.title }}
             </h3>
             <div class="flex items-center justify-between text-xs text-gray-400 mt-4">
-              <div class="flex items-center space-x-2">
+              <div 
+                class="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-1 -ml-1 rounded-full transition-colors"
+                @click.stop="router.push(`/user/${news.author_id}`)"
+              >
                 <img :src="news.author_avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'" class="w-5 h-5 rounded-full bg-gray-100" />
                 <span class="font-medium text-gray-600">{{ news.author_name }}</span>
               </div>
@@ -171,7 +174,10 @@ const handleCategoryChange = (id: number | null) => {
                 {{ news.title }}
               </h2>
               <div class="flex items-center justify-between text-xs text-white/80">
-                <div class="flex items-center space-x-2">
+                <div 
+                  class="flex items-center space-x-2 cursor-pointer hover:bg-white/20 p-1 -ml-1 rounded-full transition-colors"
+                  @click.stop="router.push(`/user/${news.author_id}`)"
+                >
                   <img :src="news.author_avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'" class="w-5 h-5 rounded-full bg-white/20" />
                   <span>{{ news.author_name }}</span>
                 </div>
@@ -191,7 +197,10 @@ const handleCategoryChange = (id: number | null) => {
               </div>
             </div>
             <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-2">
+              <div 
+                class="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-1 -ml-1 rounded-full transition-colors"
+                @click.stop="router.push(`/user/${news.author_id}`)"
+              >
                 <img :src="news.author_avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'" class="w-5 h-5 rounded-full bg-gray-100" />
                 <span class="text-xs font-medium text-gray-600">{{ news.author_name }}</span>
               </div>
