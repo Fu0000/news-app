@@ -89,7 +89,11 @@ const handleCategoryChange = (id: number | null) => {
             isSearchFocused ? 'w-full bg-white border border-primary-accent ring-2 ring-primary-accent/10 px-3' : 'w-10 px-0 justify-center border border-transparent'
           ]"
         >
-          <Icon icon="ph:magnifying-glass-bold" :class="['w-5 h-5 flex-shrink-0', isSearchFocused ? 'text-primary-accent mr-2' : 'text-gray-600']" />
+          <Icon 
+            icon="ph:magnifying-glass-bold" 
+            @click="isSearchFocused = true"
+            :class="['w-5 h-5 flex-shrink-0 cursor-pointer', isSearchFocused ? 'text-primary-accent mr-2' : 'text-gray-600']" 
+          />
           <input 
             v-show="isSearchFocused"
             v-model="searchQuery"
@@ -103,7 +107,7 @@ const handleCategoryChange = (id: number | null) => {
         </div>
         <button 
           v-if="!isSearchFocused"
-          @click="isSearchFocused = true"
+          @click="router.push('/messages')"
           class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors relative"
         >
           <Icon icon="ph:bell-bold" class="w-5 h-5" />

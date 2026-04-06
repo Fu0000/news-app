@@ -42,6 +42,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Community',
     component: () => import('@/pages/community/index.vue'),
     meta: { requiresAuth: false }
+  },
+  {
+    path: '/messages',
+    name: 'Messages',
+    component: () => import('@/pages/messages/index.vue'),
+    meta: { requiresAuth: true, hideTabBar: true }
   }
 ]
 
