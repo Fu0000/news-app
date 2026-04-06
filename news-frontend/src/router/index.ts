@@ -36,6 +36,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Video',
     component: () => import('@/pages/video/index.vue'),
     meta: { requiresAuth: false }
+  },
+  {
+    path: '/community',
+    name: 'Community',
+    component: () => import('@/pages/community/index.vue'),
+    meta: { requiresAuth: false }
   }
 ]
 

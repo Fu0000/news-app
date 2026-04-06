@@ -226,7 +226,7 @@ const handleCategoryChange = (id: number | null) => {
           </button>
         </div>
         
-        <button class="flex flex-col items-center justify-center w-16 h-full text-gray-400 hover:text-primary transition-colors">
+        <button @click="router.push('/community')" class="flex flex-col items-center justify-center w-16 h-full text-gray-400 hover:text-primary transition-colors">
           <Icon icon="ph:users" class="w-6 h-6 mb-1" />
           <span class="text-[10px] font-medium">社区</span>
         </button>

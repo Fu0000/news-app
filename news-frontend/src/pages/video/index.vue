@@ -289,7 +289,7 @@ onMounted(() => {
           </button>
         </div>
         
-        <button class="flex flex-col items-center justify-center w-16 h-full text-white/60 hover:text-white transition-colors">
+        <button @click="router.push('/community')" class="flex flex-col items-center justify-center w-16 h-full text-white/60 hover:text-white transition-colors">
           <Icon icon="ph:users" class="w-6 h-6 mb-1" />
           <span class="text-[10px] font-medium">社区</span>
         </button>
