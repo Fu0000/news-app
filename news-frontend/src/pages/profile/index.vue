@@ -73,8 +73,8 @@ const handleLogout = () => {
         <button class="w-10 h-10 rounded-full flex items-center justify-center text-gray-800 hover:bg-white/50 transition-colors">
           <Icon icon="ph:moon" class="w-6 h-6" />
         </button>
-        <button @click="handleLogout" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-800 hover:bg-white/50 transition-colors">
-          <Icon icon="ph:sign-out" class="w-6 h-6" />
+        <button @click="router.push('/settings')" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-800 hover:bg-white/50 transition-colors">
+          <Icon icon="ph:gear" class="w-6 h-6" />
         </button>
       </div>
     </header>

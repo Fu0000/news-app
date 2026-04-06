@@ -48,6 +48,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Messages',
     component: () => import('@/pages/messages/index.vue'),
     meta: { requiresAuth: true, hideTabBar: true }
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: () => import('@/pages/settings/index.vue'),
+    meta: { requiresAuth: true, hideTabBar: true }
   }
 ]
 
