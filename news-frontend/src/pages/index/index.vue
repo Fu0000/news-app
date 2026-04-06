@@ -2,29 +2,16 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
-import { useUserStore } from '@/store/user'
 import request from '@/utils/request'
 
 const router = useRouter()
-const userStore = useUserStore()
 
 // 新闻数据列表
 const newsList = ref<any[]>([])
+const activeCategoryId = ref<number | null>(null)
 const isLoading = ref(true)
-  const searchQuery = ref('')
-  const isSearchFocused = ref(false)
-  
-  // 简易防抖定时器
-  let searchTimer: any = null
-  
-  const handleSearch = () => {
-    if (searchTimer) clearTimeout(searchTimer)
-    searchTimer = setTimeout(() => {
-      fetchNews()
-    }, 500)
-  }
-  
-  // 分类频道
+
+// 分类频道
 const categories = [
   { id: null, name: '推荐' },
   { id: 1, name: '商业' },
@@ -33,41 +20,37 @@ const categories = [
   { id: 4, name: '体育' },
   { id: 5, name: '文化' },
 ]
-const activeCategoryId = ref<number | null>(null)
 
 const fetchNews = async () => {
-    isLoading.value = true
-    try {
-      const res: any = await request.get('/news/list', {
-        params: {
-          keyword: searchQuery.value,
-          category_id: activeCategoryId.value,
-          page: 1,
-          size: 10
-        }
-      })
-      newsList.value = res.list
-    } catch (err) {
-      console.error('获取新闻失败', err)
-    } finally {
-      isLoading.value = false
-    }
+  isLoading.value = true
+  try {
+    const res: any = await request.get('/news/list', {
+      params: {
+        category_id: activeCategoryId.value,
+        page: 1,
+        size: 10
+      }
+    })
+    newsList.value = res.list
+  } catch (err) {
+    console.error('获取新闻失败', err)
+  } finally {
+    isLoading.value = false
   }
+}
 
 const handleCategoryChange = (id: number | null) => {
-    activeCategoryId.value = id
-    fetchNews()
-  }
-  
-  const handleArticleClick = (id: string) => {
-    router.push(`/detail/${id}`)
-  }
-  
-  onMounted(() => {
-    fetchNews()
-  })
-  
-  // 移除未使用的 handleLogout，因为登出逻辑移到了 profile 页
+  activeCategoryId.value = id
+  fetchNews()
+}
+
+const handleArticleClick = (id: string) => {
+  router.push(`/detail/${id}`)
+}
+
+onMounted(() => {
+  fetchNews()
+})
 </script>
 
 <template>
@@ -84,29 +67,15 @@ const handleCategoryChange = (id: number | null) => {
       </div>
       <div class="flex items-center space-x-3 flex-1 ml-4 justify-end">
         <div 
-          :class="[
-            'flex items-center bg-gray-50 rounded-full transition-all duration-300',
-            isSearchFocused ? 'w-full bg-white border border-primary-accent ring-2 ring-primary-accent/10 px-3' : 'w-10 px-0 justify-center border border-transparent'
-          ]"
+          @click="router.push('/search')"
+          class="flex items-center bg-gray-50 rounded-full w-10 h-10 justify-center border border-transparent cursor-pointer hover:bg-gray-100 transition-colors"
         >
           <Icon 
             icon="ph:magnifying-glass-bold" 
-            @click="isSearchFocused = true"
-            :class="['w-5 h-5 flex-shrink-0 cursor-pointer', isSearchFocused ? 'text-primary-accent mr-2' : 'text-gray-600']" 
-          />
-          <input 
-            v-show="isSearchFocused"
-            v-model="searchQuery"
-            @input="handleSearch"
-            @focus="isSearchFocused = true"
-            @blur="isSearchFocused = !!searchQuery"
-            type="text" 
-            placeholder="搜索新闻资讯..."
-            class="bg-transparent border-none outline-none w-full text-sm text-gray-700 placeholder-gray-400 py-2"
+            class="w-5 h-5 flex-shrink-0 text-gray-600" 
           />
         </div>
         <button 
-          v-if="!isSearchFocused"
           @click="router.push('/messages')"
           class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors relative"
         >

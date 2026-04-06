@@ -74,6 +74,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: false, hideTabBar: true }
   },
   {
+    path: '/search',
+    name: 'Search',
+    component: () => import('@/pages/search/index.vue'),
+    meta: { requiresAuth: false, hideTabBar: true }
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('@/pages/error/404.vue'),
