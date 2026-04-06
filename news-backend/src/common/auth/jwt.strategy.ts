@@ -11,8 +11,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       // 忽略过期的 token
       ignoreExpiration: false,
-      // 使用相同的 secret 校验
-      secretOrKey: configService.get<string>('JWT_SECRET'),
+      // 使用相同的 secret 校验，如果没配默认给个空防 ts 报错
+      secretOrKey: configService.get<string>('JWT_SECRET') || 'default_secret',
     });
   }
 

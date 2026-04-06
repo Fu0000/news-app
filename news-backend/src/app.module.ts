@@ -7,6 +7,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { NewsModule } from './news/news.module';
 import { ContentModule } from './content/content.module';
+import { InteractionModule } from './interaction/interaction.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ContentModule } from './content/content.module';
     UserModule,
     NewsModule,
     ContentModule,
+    InteractionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
