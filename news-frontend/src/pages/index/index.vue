@@ -1,10 +1,54 @@
 <script setup lang="ts">
-import { useUserStore } from '@/store/user'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
+import { useUserStore } from '@/store/user'
+import request from '@/utils/request'
 
-const userStore = useUserStore()
 const router = useRouter()
+const userStore = useUserStore()
+
+// 新闻数据列表
+const newsList = ref<any[]>([])
+const isLoading = ref(true)
+
+// 分类频道
+const categories = [
+  { id: null, name: '推荐' },
+  { id: 1, name: '商业' },
+  { id: 2, name: '科技' },
+  { id: 3, name: '杂谈' },
+  { id: 4, name: '体育' },
+  { id: 5, name: '文化' },
+]
+const activeCategoryId = ref<number | null>(null)
+
+const fetchNews = async () => {
+  isLoading.value = true
+  try {
+    const res: any = await request.get('/news/list', {
+      params: {
+        category_id: activeCategoryId.value,
+        page: 1,
+        size: 10
+      }
+    })
+    newsList.value = res.list
+  } catch (err) {
+    console.error('获取新闻失败', err)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleCategoryChange = (id: number | null) => {
+  activeCategoryId.value = id
+  fetchNews()
+}
+
+onMounted(() => {
+  fetchNews()
+})
 
 const handleLogout = () => {
   userStore.logout()
@@ -38,99 +82,92 @@ const handleLogout = () => {
     <!-- 频道导航 (横向滚动) -->
     <nav class="bg-white border-b border-gray-100 overflow-x-auto whitespace-nowrap scrollbar-hide">
       <div class="px-5 py-3 flex space-x-6 inline-flex min-w-max">
-        <button class="text-sm font-semibold text-primary relative pb-1">
-          推荐
-          <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-1 rounded-full bg-primary-accent"></div>
+        <button 
+          v-for="cat in categories" 
+          :key="cat.name"
+          @click="handleCategoryChange(cat.id)"
+          :class="['text-sm relative pb-1 transition-colors', activeCategoryId === cat.id ? 'font-semibold text-primary' : 'font-medium text-gray-500 hover:text-primary']"
+        >
+          {{ cat.name }}
+          <div v-if="activeCategoryId === cat.id" class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-1 rounded-full bg-primary-accent"></div>
         </button>
-        <button class="text-sm font-medium text-gray-500 hover:text-primary transition-colors pb-1">科技</button>
-        <button class="text-sm font-medium text-gray-500 hover:text-primary transition-colors pb-1">商业</button>
-        <button class="text-sm font-medium text-gray-500 hover:text-primary transition-colors pb-1">娱乐</button>
-        <button class="text-sm font-medium text-gray-500 hover:text-primary transition-colors pb-1">体育</button>
-        <button class="text-sm font-medium text-gray-500 hover:text-primary transition-colors pb-1">文化</button>
-        <button class="text-sm font-medium text-gray-500 hover:text-primary transition-colors pb-1">国际</button>
       </div>
     </nav>
 
     <!-- 新闻瀑布流 -->
     <main class="flex-1 overflow-y-auto px-4 py-6 space-y-6">
       
-      <!-- 焦点大图卡片 (Focus Card) -->
-      <article class="group cursor-pointer relative overflow-hidden rounded-[24px] shadow-soft hover:shadow-float transition-all duration-300 transform hover:-translate-y-1 bg-white">
-        <div class="aspect-[4/3] w-full relative overflow-hidden bg-gray-100">
-          <img src="https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?q=80&w=2940&auto=format&fit=crop" 
-               alt="Focus Image" 
-               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-        </div>
-        <div class="absolute bottom-0 left-0 w-full p-6 text-white">
-          <span class="inline-block px-3 py-1 bg-primary-accent text-white text-[10px] font-bold uppercase tracking-wider rounded-full mb-3">科技前沿</span>
-          <h2 class="text-xl font-display font-bold leading-snug mb-2 line-clamp-2">
-            2024年全球人工智能发展趋势报告发布：生成式AI重塑生产力
-          </h2>
-          <div class="flex items-center text-xs text-white/80 space-x-3">
-            <span class="flex items-center"><Icon icon="ph:clock" class="mr-1" />2小时前</span>
-            <span class="flex items-center"><Icon icon="ph:eye" class="mr-1" />1.2w</span>
-          </div>
-        </div>
-      </article>
+      <div v-if="isLoading" class="flex justify-center py-10">
+        <Icon icon="ph:spinner-gap-bold" class="w-8 h-8 animate-spin text-primary-accent" />
+      </div>
 
-      <!-- 标准三图流卡片 (Three-Image Flow) -->
-      <article class="group cursor-pointer bg-white p-5 rounded-[20px] shadow-sm border border-gray-50 hover:shadow-md transition-shadow">
-        <h3 class="text-base font-bold text-primary leading-tight mb-3 group-hover:text-primary-accent transition-colors line-clamp-2">
-          新能源汽车产业迎来拐点，多家车企公布第三季度创纪录财报，市场渗透率首次突破50%
-        </h3>
-        <div class="grid grid-cols-3 gap-2 mb-4">
-          <div class="aspect-square rounded-xl overflow-hidden bg-gray-100">
-            <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover" />
+      <template v-else>
+        <!-- 遍历真实新闻数据 -->
+        <article 
+          v-for="news in newsList" 
+          :key="news.id"
+          class="group cursor-pointer bg-white rounded-[20px] shadow-sm border border-gray-50 hover:shadow-md transition-shadow overflow-hidden"
+        >
+          <!-- 无图情况 -->
+          <div v-if="!news.cover_urls || news.cover_urls.length === 0" class="p-5">
+            <h3 class="text-base font-bold text-primary leading-tight mb-2 group-hover:text-primary-accent transition-colors line-clamp-2">
+              {{ news.title }}
+            </h3>
+            <div class="flex items-center justify-between text-xs text-gray-400 mt-4">
+              <div class="flex items-center space-x-2">
+                <img :src="news.author_avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'" class="w-5 h-5 rounded-full bg-gray-100" />
+                <span class="font-medium text-gray-600">{{ news.author_name }}</span>
+              </div>
+              <span class="flex items-center"><Icon icon="ph:chat-teardrop" class="mr-1" />{{ news.comment_count }}</span>
+            </div>
           </div>
-          <div class="aspect-square rounded-xl overflow-hidden bg-gray-100">
-            <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover" />
-          </div>
-          <div class="aspect-square rounded-xl overflow-hidden bg-gray-100">
-            <img src="https://images.unsplash.com/photo-1617788138017-80ad40651399?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover" />
-          </div>
-        </div>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-2">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-5 h-5 rounded-full bg-gray-100" />
-            <span class="text-xs font-medium text-gray-600">商业周刊</span>
-          </div>
-          <div class="flex items-center space-x-3 text-gray-400 text-xs">
-            <span class="flex items-center hover:text-primary-accent transition-colors"><Icon icon="ph:chat-teardrop" class="mr-1" />342</span>
-            <button class="hover:text-primary transition-colors"><Icon icon="ph:dots-three-outline-vertical-fill" /></button>
-          </div>
-        </div>
-      </article>
 
-      <!-- 标准单图左文右图卡片 (Standard List Flow) -->
-      <article class="group cursor-pointer bg-white p-5 rounded-[20px] shadow-sm border border-gray-50 hover:shadow-md transition-shadow flex space-x-4">
-        <div class="flex-1 flex flex-col justify-between">
-          <h3 class="text-base font-bold text-primary leading-tight mb-2 group-hover:text-primary-accent transition-colors line-clamp-3">
-            深度解析：为什么极简主义设计在现代互联网应用中重新成为主流趋势？
-          </h3>
-          <div class="flex items-center text-xs text-gray-500 space-x-3 mt-2">
-            <span class="font-medium text-primary">UI设计院</span>
-            <span>4小时前</span>
+          <!-- 单图情况 (大焦点图) -->
+          <div v-else-if="news.cover_urls.length === 1" class="relative">
+            <div class="aspect-[4/3] w-full relative overflow-hidden bg-gray-100">
+              <img :src="news.cover_urls[0]" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            </div>
+            <div class="absolute bottom-0 left-0 w-full p-5 text-white">
+              <h2 class="text-lg font-display font-bold leading-snug mb-3 line-clamp-2">
+                {{ news.title }}
+              </h2>
+              <div class="flex items-center justify-between text-xs text-white/80">
+                <div class="flex items-center space-x-2">
+                  <img :src="news.author_avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'" class="w-5 h-5 rounded-full bg-white/20" />
+                  <span>{{ news.author_name }}</span>
+                </div>
+                <span class="flex items-center"><Icon icon="ph:eye" class="mr-1" />{{ news.view_count }}</span>
+              </div>
+            </div>
           </div>
+
+          <!-- 三图情况 -->
+          <div v-else class="p-5">
+            <h3 class="text-base font-bold text-primary leading-tight mb-3 group-hover:text-primary-accent transition-colors line-clamp-2">
+              {{ news.title }}
+            </h3>
+            <div class="grid grid-cols-3 gap-2 mb-4">
+              <div v-for="(url, idx) in news.cover_urls.slice(0, 3)" :key="idx" class="aspect-square rounded-xl overflow-hidden bg-gray-100">
+                <img :src="url" class="w-full h-full object-cover" />
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <img :src="news.author_avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'" class="w-5 h-5 rounded-full bg-gray-100" />
+                <span class="text-xs font-medium text-gray-600">{{ news.author_name }}</span>
+              </div>
+              <div class="flex items-center space-x-3 text-gray-400 text-xs">
+                <span class="flex items-center hover:text-primary-accent transition-colors"><Icon icon="ph:chat-teardrop" class="mr-1" />{{ news.comment_count }}</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <div v-if="newsList.length === 0" class="text-center text-gray-400 py-10 text-sm">
+          暂无相关资讯
         </div>
-        <div class="w-[110px] h-[80px] rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
-          <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        </div>
-      </article>
-      
-      <!-- 无图纯文字卡片 (Text Only Flow) -->
-      <article class="group cursor-pointer bg-white p-5 rounded-[20px] shadow-sm border border-gray-50 hover:shadow-md transition-shadow">
-        <h3 class="text-base font-bold text-primary leading-tight mb-2 group-hover:text-primary-accent transition-colors line-clamp-2">
-          刚刚，央行宣布下调存款准备金率0.5个百分点，释放长期资金约1万亿元
-        </h3>
-        <p class="text-sm text-gray-500 line-clamp-2 mb-3 leading-relaxed">
-          为巩固经济回升向好基础，保持流动性合理充裕，中国人民银行决定于2024年X月X日下调金融机构存款准备金率...
-        </p>
-        <div class="flex items-center justify-between text-xs text-gray-400">
-          <span class="text-primary-accent bg-primary-accent/10 px-2 py-0.5 rounded text-[10px] font-bold">置顶</span>
-          <span class="flex items-center"><Icon icon="ph:chat-teardrop" class="mr-1" />8.9w 评论</span>
-        </div>
-      </article>
+      </template>
 
       <!-- 底部留白，防止被 TabBar 遮挡 -->
       <div class="h-20"></div>

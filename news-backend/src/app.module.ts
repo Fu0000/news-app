@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { CommonModule } from './common/common.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
+import { NewsModule } from './news/news.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from './user/user.module';
     CommonModule,
     PrismaModule,
     UserModule,
+    NewsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
