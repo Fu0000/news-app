@@ -4,9 +4,12 @@ import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/filters/http-exception/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform/transform.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // 指定应用类型为 Express，以便配置静态文件服务
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // 1. 设置全局 API 前缀
   app.setGlobalPrefix('api/v1');
@@ -14,7 +17,12 @@ async function bootstrap() {
   // 2. 启用跨域 CORS (由于前后端分离)
   app.enableCors();
 
-  // 3. 全局注册 DTO 参数校验管道
+  // 3. 配置静态资源目录 (为了访问上传的图片)
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads/',
+  });
+
+  // 4. 全局注册 DTO 参数校验管道
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // 自动剔除 DTO 中未定义的字段
@@ -23,13 +31,13 @@ async function bootstrap() {
     }),
   );
 
-  // 4. 全局注册异常过滤器 (统一错误响应 JSON 格式)
+  // 5. 全局注册异常过滤器 (统一错误响应 JSON 格式)
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // 5. 全局注册拦截器 (统一成功响应 JSON 格式)
+  // 6. 全局注册拦截器 (统一成功响应 JSON 格式)
   app.useGlobalInterceptors(new TransformInterceptor());
 
-  // 6. 配置 Swagger API 文档
+  // 7. 配置 Swagger API 文档
   const config = new DocumentBuilder()
     .setTitle('综合新闻 APP - API 接口文档')
     .setDescription('这是基于 NestJS 开发的综合新闻应用后端服务接口规范')

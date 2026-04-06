@@ -18,6 +18,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'ArticleDetail',
     component: () => import('@/pages/detail/article.vue'),
     meta: { requiresAuth: false, hideTabBar: true }
+  },
+  {
+    path: '/publish',
+    name: 'Publish',
+    component: () => import('@/pages/publish/index.vue'),
+    meta: { requiresAuth: true, hideTabBar: true }
   }
 ]
 

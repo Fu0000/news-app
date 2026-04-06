@@ -192,7 +192,7 @@ const handleLogout = () => {
         
         <!-- 居中凸起的发布按钮 -->
         <div class="relative w-16 h-full flex justify-center">
-          <button class="absolute -top-5 w-14 h-14 rounded-full bg-primary text-white shadow-float flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
+          <button @click="router.push('/publish')" class="absolute -top-5 w-14 h-14 rounded-full bg-primary text-white shadow-float flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
             <Icon icon="ph:plus-bold" class="w-6 h-6" />
           </button>
         </div>

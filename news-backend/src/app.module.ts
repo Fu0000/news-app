@@ -6,6 +6,7 @@ import { CommonModule } from './common/common.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { NewsModule } from './news/news.module';
+import { ContentModule } from './content/content.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { NewsModule } from './news/news.module';
     PrismaModule,
     UserModule,
     NewsModule,
+    ContentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
