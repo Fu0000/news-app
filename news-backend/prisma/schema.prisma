@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id          BigInt   @id @default(autoincrement()) // 雪花算法 ID 建议在应用层生成，这里暂时用自增替代
+  phone       String   @unique @db.VarChar(20)
+  password    String   @db.VarChar(128)
+  nickname    String   @db.VarChar(50)
+  avatar_url  String?  @db.VarChar(255)
+  bio         String?  @db.VarChar(200)
+  status      Int      @default(1) @db.TinyInt // 1:正常, 2:封禁, 3:注销
+  create_time DateTime @default(now())
+  update_time DateTime @updatedAt
+  is_deleted  Int      @default(0) @db.TinyInt // 0:未删, 1:已删
+
+  // Relations
+  articles    Article[]
+  videos      Video[]
+  comments    Comment[]
+  interactions UserInteraction[]
+
+  @@map("users")
+}
+
+model Article {
+  id            BigInt   @id @default(autoincrement())
+  author_id     BigInt
+  category_id   Int
+  title         String   @db.VarChar(128)
+  cover_urls    Json?    // 封面图数组
+  content       String   @db.LongText
+  view_count    Int      @default(0)
+  like_count    Int      @default(0)
+  comment_count Int      @default(0)
+  status        Int      @default(1) @db.TinyInt // 0:草稿, 1:已发布, 2:下架
+  create_time   DateTime @default(now())
+  update_time   DateTime @updatedAt
+  is_deleted    Int      @default(0) @db.TinyInt
+
+  // Relations
+  author        User      @relation(fields: [author_id], references: [id])
+  comments      Comment[]
+
+  @@map("articles")
+  @@index([category_id, status, create_time]) // 联合索引优化列表查询
+  @@index([author_id])
+}
+
+model Video {
+  id          BigInt   @id @default(autoincrement())
+  author_id   BigInt
+  title       String   @db.VarChar(128)
+  video_url   String   @db.VarChar(255)
+  cover_url   String   @db.VarChar(255)
+  duration    Int      @default(0)
+  view_count  Int      @default(0)
+  like_count  Int      @default(0)
+  create_time DateTime @default(now())
+  update_time DateTime @updatedAt
+  is_deleted  Int      @default(0) @db.TinyInt
+
+  // Relations
+  author      User      @relation(fields: [author_id], references: [id])
+  comments    Comment[]
+
+  @@map("videos")
+  @@index([author_id])
+}
+
+model Comment {
+  id          BigInt   @id @default(autoincrement())
+  user_id     BigInt
+  target_id   BigInt
+  target_type Int      @db.TinyInt // 1:文章, 2:视频, 3:动态
+  parent_id   BigInt   @default(0) // 0表示顶级评论
+  content     String   @db.VarChar(1000)
+  like_count  Int      @default(0)
+  create_time DateTime @default(now())
+  is_deleted  Int      @default(0) @db.TinyInt
+
+  // Relations
+  user        User     @relation(fields: [user_id], references: [id])
+  article     Article? @relation(fields: [target_id], references: [id], map: "article_fk") // 注意这里简化了多态关联
+  video       Video?   @relation(fields: [target_id], references: [id], map: "video_fk")
+
+  @@map("comments")
+  @@index([target_id, target_type])
+}
+
+model UserInteraction {
+  id          BigInt   @id @default(autoincrement())
+  user_id     BigInt
+  target_id   BigInt
+  target_type Int      @db.TinyInt // 1:文章, 2:视频, 3:评论
+  action_type Int      @db.TinyInt // 1:点赞, 2:收藏
+  create_time DateTime @default(now())
+
+  // Relations
+  user        User     @relation(fields: [user_id], references: [id])
+
+  @@map("user_interactions")
+  @@unique([user_id, target_id, target_type, action_type]) // 防止重复点赞/收藏
+}
