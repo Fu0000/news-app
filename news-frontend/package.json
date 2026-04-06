@@ -14,8 +14,10 @@
     "axios": "^1.6.8",
     "pinia": "^2.1.7",
     "postcss": "^8.5.8",
+    "swiper": "^8.4.7",
     "tailwindcss": "^3.4.19",
     "vue": "^3.4.21",
+    "vue-awesome-swiper": "^5.0.1",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
