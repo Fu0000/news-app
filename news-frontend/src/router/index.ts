@@ -24,6 +24,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Publish',
     component: () => import('@/pages/publish/index.vue'),
     meta: { requiresAuth: true, hideTabBar: true }
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('@/pages/profile/index.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 

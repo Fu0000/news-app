@@ -66,11 +66,8 @@ const handleCategoryChange = (id: number | null) => {
   onMounted(() => {
     fetchNews()
   })
-
-const handleLogout = () => {
-  userStore.logout()
-  router.push('/login')
-}
+  
+  // 移除未使用的 handleLogout，因为登出逻辑移到了 profile 页
 </script>
 
 <template>
@@ -233,7 +230,7 @@ const handleLogout = () => {
           <Icon icon="ph:users" class="w-6 h-6 mb-1" />
           <span class="text-[10px] font-medium">社区</span>
         </button>
-        <button @click="handleLogout" class="flex flex-col items-center justify-center w-16 h-full text-gray-400 hover:text-primary transition-colors">
+        <button @click="router.push('/profile')" class="flex flex-col items-center justify-center w-16 h-full text-gray-400 hover:text-primary transition-colors">
           <Icon icon="ph:user" class="w-6 h-6 mb-1" />
           <span class="text-[10px] font-medium">我的</span>
         </button>
