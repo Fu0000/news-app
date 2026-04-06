@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-surface-muted text-primary antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  
+  /* 隐藏滚动条但保留滚动功能 (APP风格) */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* 确保全局盒子模型正确 */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white font-medium py-3.5 px-6 rounded-full 
+           shadow-soft hover:shadow-float active:scale-[0.98] 
+           transition-all duration-300 flex items-center justify-center;
+  }
+  
+  .input-field {
+    @apply w-full bg-white border border-gray-100 rounded-2xl px-5 py-4
+           text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 
+           focus:ring-primary-accent/20 focus:border-primary-accent/30 
+           transition-all duration-300 text-base;
+  }
+  
+  .glass-panel {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20 shadow-soft;
+  }
+}
