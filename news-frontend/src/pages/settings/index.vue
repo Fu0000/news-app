@@ -72,7 +72,10 @@ const handleItemClick = (id: string) => {
     <main class="flex-1 overflow-y-auto px-4 pt-4 pb-10">
       
       <!-- 用户简易卡片 (可点击编辑资料) -->
-      <div class="bg-white rounded-[20px] p-4 mb-6 shadow-sm flex items-center justify-between cursor-pointer active:scale-[0.98] transition-transform">
+      <div 
+        @click="router.push('/edit-profile')"
+        class="bg-white rounded-[20px] p-4 mb-6 shadow-sm flex items-center justify-between cursor-pointer active:scale-[0.98] transition-transform"
+      >
         <div class="flex items-center space-x-4">
           <img :src="userStore.avatarUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'" class="w-14 h-14 rounded-full bg-gray-100 object-cover border border-gray-100" />
           <div>

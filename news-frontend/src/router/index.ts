@@ -60,6 +60,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Topic',
     component: () => import('@/pages/topic/index.vue'),
     meta: { requiresAuth: false, hideTabBar: true }
+  },
+  {
+    path: '/edit-profile',
+    name: 'EditProfile',
+    component: () => import('@/pages/edit-profile/index.vue'),
+    meta: { requiresAuth: true, hideTabBar: true }
   }
 ]
 

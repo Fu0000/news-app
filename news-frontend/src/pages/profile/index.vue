@@ -84,13 +84,13 @@ const handleLogout = () => {
       <!-- 用户资料卡片 -->
       <div class="px-5 pt-4 pb-6">
         <div class="flex items-center space-x-5 mb-6">
-          <div class="relative">
+          <div class="relative cursor-pointer" @click="router.push('/edit-profile')">
             <img :src="userStore.avatarUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'" class="w-20 h-20 rounded-full bg-white p-1 shadow-md object-cover" />
             <div class="absolute bottom-0 right-0 w-6 h-6 bg-primary text-white rounded-full border-2 border-white flex items-center justify-center shadow-sm">
               <Icon icon="ph:pencil-simple" class="w-3 h-3" />
             </div>
           </div>
-          <div class="flex-1">
+          <div class="flex-1 cursor-pointer" @click="router.push('/edit-profile')">
             <h1 class="text-2xl font-display font-bold text-primary mb-1">{{ userStore.nickname || '未命名用户' }}</h1>
             <p class="text-sm text-gray-500 font-medium">探索世界的每一天，都在这里记录。</p>
             <div class="mt-2 flex items-center text-xs font-bold text-primary-accent bg-primary-accent/10 w-fit px-2 py-0.5 rounded">
