@@ -7,18 +7,26 @@ export class NewsService {
   constructor(private prisma: PrismaService) {}
 
   /**
-   * 获取新闻列表 (支持分类筛选与分页)
+   * 获取新闻列表 (支持分类筛选、模糊搜索与分页)
    */
   async getNewsList(query: GetNewsListDto) {
-    const { category_id, page = 1, size = 10 } = query;
+    const { keyword, category_id, page = 1, size = 10 } = query;
 
     // 构建查询条件：只查询已发布状态 (status: 1) 且未删除的文章
     const whereCondition: any = {
       status: 1,
       is_deleted: 0,
     };
+    
     if (category_id) {
       whereCondition.category_id = category_id;
+    }
+
+    if (keyword) {
+      whereCondition.OR = [
+        { title: { contains: keyword } }, // Prisma 会编译为 LIKE '%keyword%'
+        { content: { contains: keyword } },
+      ];
     }
 
     // 并行执行总数查询和列表查询

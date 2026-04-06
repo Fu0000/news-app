@@ -1,8 +1,13 @@
-import { IsInt, IsOptional, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class GetNewsListDto {
+  @ApiPropertyOptional({ description: '搜索关键词', example: '人工智能' })
+  @IsOptional()
+  @IsString()
+  keyword?: string;
+
   @ApiPropertyOptional({ description: '分类ID', example: 1 })
   @IsOptional()
   @Type(() => Number)

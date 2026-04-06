@@ -11,8 +11,20 @@ const userStore = useUserStore()
 // 新闻数据列表
 const newsList = ref<any[]>([])
 const isLoading = ref(true)
-
-// 分类频道
+  const searchQuery = ref('')
+  const isSearchFocused = ref(false)
+  
+  // 简易防抖定时器
+  let searchTimer: any = null
+  
+  const handleSearch = () => {
+    if (searchTimer) clearTimeout(searchTimer)
+    searchTimer = setTimeout(() => {
+      fetchNews()
+    }, 500)
+  }
+  
+  // 分类频道
 const categories = [
   { id: null, name: '推荐' },
   { id: 1, name: '商业' },
@@ -24,22 +36,23 @@ const categories = [
 const activeCategoryId = ref<number | null>(null)
 
 const fetchNews = async () => {
-  isLoading.value = true
-  try {
-    const res: any = await request.get('/news/list', {
-      params: {
-        category_id: activeCategoryId.value,
-        page: 1,
-        size: 10
-      }
-    })
-    newsList.value = res.list
-  } catch (err) {
-    console.error('获取新闻失败', err)
-  } finally {
-    isLoading.value = false
+    isLoading.value = true
+    try {
+      const res: any = await request.get('/news/list', {
+        params: {
+          keyword: searchQuery.value,
+          category_id: activeCategoryId.value,
+          page: 1,
+          size: 10
+        }
+      })
+      newsList.value = res.list
+    } catch (err) {
+      console.error('获取新闻失败', err)
+    } finally {
+      isLoading.value = false
+    }
   }
-}
 
 const handleCategoryChange = (id: number | null) => {
     activeCategoryId.value = id
@@ -72,11 +85,30 @@ const handleLogout = () => {
         <div class="h-4 w-[1px] bg-gray-200"></div>
         <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Discover</span>
       </div>
-      <div class="flex space-x-4">
-        <button class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors">
-          <Icon icon="ph:magnifying-glass-bold" class="w-5 h-5" />
-        </button>
-        <button class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors relative">
+      <div class="flex items-center space-x-3 flex-1 ml-4 justify-end">
+        <div 
+          :class="[
+            'flex items-center bg-gray-50 rounded-full transition-all duration-300',
+            isSearchFocused ? 'w-full bg-white border border-primary-accent ring-2 ring-primary-accent/10 px-3' : 'w-10 px-0 justify-center border border-transparent'
+          ]"
+        >
+          <Icon icon="ph:magnifying-glass-bold" :class="['w-5 h-5 flex-shrink-0', isSearchFocused ? 'text-primary-accent mr-2' : 'text-gray-600']" />
+          <input 
+            v-show="isSearchFocused"
+            v-model="searchQuery"
+            @input="handleSearch"
+            @focus="isSearchFocused = true"
+            @blur="isSearchFocused = !!searchQuery"
+            type="text" 
+            placeholder="搜索新闻资讯..."
+            class="bg-transparent border-none outline-none w-full text-sm text-gray-700 placeholder-gray-400 py-2"
+          />
+        </div>
+        <button 
+          v-if="!isSearchFocused"
+          @click="isSearchFocused = true"
+          class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors relative"
+        >
           <Icon icon="ph:bell-bold" class="w-5 h-5" />
           <span class="absolute top-2 right-2 w-2 h-2 bg-primary-accent rounded-full ring-2 ring-white"></span>
         </button>
