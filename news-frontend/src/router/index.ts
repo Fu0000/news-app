@@ -30,6 +30,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Profile',
     component: () => import('@/pages/profile/index.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/video',
+    name: 'Video',
+    component: () => import('@/pages/video/index.vue'),
+    meta: { requiresAuth: false }
   }
 ]
 
